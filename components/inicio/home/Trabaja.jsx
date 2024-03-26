@@ -66,7 +66,7 @@ function Trabaja() {
             return errores;
           }}
           onSubmit={async (valores, { resetForm }) => {
-            const url = "https://pimp-gamma.vercel.app/api/trabajapimp";
+            const url = "/api/trabajapimp";
             const data = {
               nombre: valores.nombre,
               edad: valores.edad,
