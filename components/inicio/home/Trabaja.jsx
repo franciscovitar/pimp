@@ -66,8 +66,7 @@ function Trabaja() {
             return errores;
           }}
           onSubmit={async (valores, { resetForm }) => {
-            // const url = "http://localhost:3826/trabajapimp";
-            const url = "https://pimpestetica.com/trabajapimp";
+            const url = "/api/trabajapimp";
             const data = {
               nombre: valores.nombre,
               edad: valores.edad,
