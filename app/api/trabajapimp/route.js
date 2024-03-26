@@ -45,7 +45,7 @@ export async function POST(req) {
     secure: true,
     auth: {
       user: "franvitar99@gmail.com",
-      pass: "scgl zuqr fqhl cizt",
+      pass: "scglzuqrfqhlcizt",
     },
     tls: {
       rejectUnauthorized: false,
