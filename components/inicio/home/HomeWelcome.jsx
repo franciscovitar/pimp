@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import "../styles/_homewelcome.scss";
-import Typed from "react-typed";
+import { ReactTyped } from "react-typed";
 import Image from "next/image";
 import Pimp from "../../../Image/pimp-blanco.png";
 
@@ -44,7 +44,7 @@ function HomeWelcome() {
 
         <motion.p {...textVariants}>
           Descubre tu belleza <br />
-          <Typed
+          <ReactTyped
             strings={["Auténtica", "Unica", "Real", "Verdadera"]}
             typeSpeed={60}
             backSpeed={60}
