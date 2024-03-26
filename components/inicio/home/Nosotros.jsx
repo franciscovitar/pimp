@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import BudaImage from "../../../image/pexels-laura-paredis-13012336.jpg";
+import BudaImage from "../../../Image/pexels-laura-paredis-13012336.jpg";
 import "../styles/_nosotros.scss";
 import Image from "next/image";
 

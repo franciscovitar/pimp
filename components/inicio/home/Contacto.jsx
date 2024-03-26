@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import "../styles/_contacto.scss";
 import Image from "next/image";
 import ubi1 from "../../../Image/ubi1.png";
-import ubi2 from "../../../image/ubi2.png";
+import ubi2 from "../../../Image/ubi2.png";
 
 // Constantes para efectos de Framer Motion
 const headingVariants = {
