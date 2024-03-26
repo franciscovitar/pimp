@@ -40,12 +40,12 @@ export async function POST(req) {
 </div>`;
 
   const transporter = nodemailer.createTransport({
-    host: process.env.MAIL_HOST,
-    port: process.env.MAIL_PORT,
+    host: "smtp.gmail.com",
+    port: "465",
     secure: true,
     auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS,
+      user: "franvitar99@gmail.com",
+      pass: "scgl zuqr fqhl cizt",
     },
     tls: {
       rejectUnauthorized: false,
@@ -53,7 +53,7 @@ export async function POST(req) {
   });
 
   const info = await transporter.sendMail({
-    from: '"Pimp" <contactotuweb@pimpestetica.com>',
+    from: '"Pimp" <franvitar99@gmail.com>',
     to: "franvitar15@gmail.com",
     subject: `Formulario de contacto sitio web ${nombre}`,
     html: contentHTML,
