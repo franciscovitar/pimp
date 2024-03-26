@@ -1,0 +1,95 @@
+$Rosa_principal: #B0E0E6;
+$Rosa_claro: #fef4f7;
+
+.contenedor-principal-demo {
+    background-image: url('../../../image/imagen2.jpg');
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    box-shadow: inset 0 0 0 1000px #01c5c533;
+
+    @supports (-webkit-touch-callout: none) {
+        background-attachment: scroll;
+    }
+
+    @supports not (-webkit-touch-callout: none) {
+        background-attachment: fixed;
+    }
+
+    .contenedor-secundario {
+        width: 85%;
+        margin: 0 auto;
+        padding: 120px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+        h2 {
+            color: $Rosa_claro;
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: $Rosa_claro;
+            font-size: 1.3rem;
+            text-align: center;
+            margin-bottom: 50px;
+            font-weight: 500;
+        }
+
+        button {
+            color: #fff;
+            background-color: $Rosa_principal;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: none;
+
+            &:hover {
+                transition: all 0.2s;
+                background-color: #93dae3;
+            }
+        }
+
+        @media (max-width: 1400px) {
+            h2 {
+                font-size: 1.8rem;
+                font-weight: 600;
+            }
+
+            h3 {
+                font-size: 1.3rem;
+                font-weight: 600;
+            }
+
+            button {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            width: 80%;
+        }
+
+        @media (max-width: 600px) {
+            width: 90%;
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.2rem;
+            }
+
+            button {
+                font-size: 0.9rem;
+            }
+        }
+    }
+}

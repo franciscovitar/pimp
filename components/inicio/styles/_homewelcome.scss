@@ -1,0 +1,95 @@
+$Violeta4: #FFB6C1;
+
+.HomeWelcome-container {
+    background-image: url("../../../Image/Welcome.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @supports (-webkit-touch-callout: none) {
+        background-attachment: scroll;
+    }
+
+    @supports not (-webkit-touch-callout: none) {
+        background-attachment: fixed;
+    }
+
+    @media (max-height: 500px) {
+        height: 500px;
+    }
+
+    &::before {
+        content: "";
+        position: absolute;
+        background-color: hsla(0, 0%, 0%, 0.172);
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+    .container {
+        position: relative;
+        color: #fff;
+        padding: 50px;
+        width: 600px;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+
+        @media (max-width: 800px) {
+            width: 90%;
+        }
+
+        @media (max-width: 500px) {
+            width: 100%;
+            padding: 20px;
+        }
+
+        img {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+
+            @media (max-width: 900px) {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        p {
+            display: inline-block;
+            color: #ffffff;
+            text-decoration: none;
+            margin-top: 5px;
+            font-size: 40px;
+            font-weight: 700;
+
+            @media (max-width: 800px) {
+                font-size: 30px;
+            }
+        }
+
+        a {
+            border: none;
+            background-color: $Violeta4;
+            text-decoration: none;
+            color: #ffffff;
+            border-radius: 18px;
+            font-size: 15px;
+            padding: 13px 17px;
+
+            &:hover {
+                transition: all 0.2s;
+                background-color: #fe919f;
+            }
+        }
+    }
+}

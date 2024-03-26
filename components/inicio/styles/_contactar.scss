@@ -1,0 +1,105 @@
+$Rosa_principal: #FF6B98;
+
+.contactar-container {
+    background-color: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 0;
+
+
+    @media (max-width: 800px) {
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    .contacto {
+        display: flex;
+        width: 70%;
+        align-items: center;
+        justify-content: space-between;
+        gap: 50px;
+        text-align: center;
+        color: #ffffff;
+
+        @media (max-width: 1000px) {
+            // display: flex;
+            flex-direction: column;
+            // gap: px;
+        }
+
+        div {
+            // width: 300px;
+            // height: 100px;
+
+
+            img {
+                width: 200px;
+                height: 200px;
+
+                @media (max-width: 700px) {
+                    width: 150px;
+                    height: 150px;
+                }
+
+
+                @media (max-width: 500px) {
+                    width: 120px;
+                    height: 120px;
+                }
+
+            }
+
+            h2 {
+                font-weight: 600;
+                color: #FFB6C1;
+                text-decoration: underline #FFB6C1;
+                text-underline-offset: 0.2em;
+                text-decoration-thickness: 0.05em;
+
+                @media (max-width: 800px) {
+                    font-size: 20px;
+                }
+            }
+
+            p {
+                font-weight: 400;
+
+                @media (max-width: 1000px) {
+                    font-size: 16px;
+                }
+            }
+
+            .iconos {
+                width: 70px;
+                display: flex;
+                margin: auto;
+                justify-content: center;
+                gap: 15px;
+                height: 30px;
+
+                @media (max-width: 1000px) {
+                    margin: auto;
+                    // gap: 15px;
+                    font-size: 18px;
+                }
+
+                i {
+                    color: #ffffff;
+                    font-size: 25px;
+
+                    @media (max-width: 500px) {
+                        margin: auto;
+                        // gap: 15px;
+                        font-size: 20px;
+                    }
+
+                    &:hover {
+                        color: #FFB6C1;
+                    }
+                }
+            }
+        }
+    }
+}

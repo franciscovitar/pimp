@@ -1,0 +1,117 @@
+.trabaja-container {
+    background-image: url("../../../Image/trabaja.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    position: relative;
+    background-attachment: fixed;
+    padding: 100px 0;
+    display: flex;
+    color: #000000;
+    align-items: center;
+
+    @supports (-webkit-touch-callout: none) {
+        background-attachment: scroll;
+    }
+
+    @supports not (-webkit-touch-callout: none) {
+        background-attachment: fixed;
+    }
+
+    @media (max-height: 500px) {
+        height: 500px;
+    }
+
+    &::before {
+        content: "";
+        position: absolute;
+        background-color: #6c4e5221;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+    .container {
+        max-width: 700px;
+        position: relative;
+
+        .titulos {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            align-items: center;
+
+            h2 {
+                color: #fff;
+                font-size: 40px;
+
+                @media (max-width: 500px) {
+                    font-size: 30px;
+                }
+            }
+
+            .line {
+                background-color: #FFB6C1;
+                height: 3px;
+                width: 70px;
+                margin: 3px 0 10px 0;
+            }
+        }
+
+        .formulario {
+            display: flex;
+            flex-direction: column;
+
+            input,
+            textarea {
+                margin-top: 20px;
+                background: rgba(255, 255, 255, 0.911);
+                padding: 12px 20px;
+                text-decoration: none;
+                border: none;
+                transition: 0.7s;
+                outline: none;
+                border-radius: 10px;
+                resize: none;
+
+                &:hover {
+                    background: rgb(255, 255, 255);
+                }
+
+                &::placeholder {
+                    color: rgb(93, 93, 93);
+                    font-weight: 500;
+                }
+            }
+
+            .error {
+                color: rgb(255, 0, 0);
+                font-weight: 600;
+                margin-top: 5px;
+                font-size: 14px;
+            }
+
+            textarea {
+                height: 200px;
+            }
+
+            button {
+                background-color: #FFB6C1;
+                border: none;
+                margin: 20px auto;
+                border-radius: 10px;
+                width: 50%;
+                padding: 10px;
+                color: #fff;
+                font-weight: 700;
+            }
+
+            .exito {
+                font-weight: 600;
+                color: rgb(15, 208, 15);
+                margin: auto;
+            }
+        }
+    }
+}
