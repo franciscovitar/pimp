@@ -2,6 +2,7 @@ import { Roboto } from "next/font/google";
 import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import ToastProvider from "@/provider/toast-provider";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -43,7 +44,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body translate="no" className={roboto.className}>
-        {children}
+        <ToastProvider /> {children}
       </body>
     </html>
   );

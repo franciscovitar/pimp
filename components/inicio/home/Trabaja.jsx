@@ -2,12 +2,64 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import axios from "axios";
+import { toast } from "react-hot-toast";
 import "../styles/_trabaja.scss";
+import emailjs from "@emailjs/browser";
 
 function Trabaja() {
-  const [formularioEnviado, cambiarFormularioEnviado] = useState(false);
+  const [nombre, setNombre] = useState("");
+  const [correo, setCorreo] = useState("");
+  const [edad, setEdad] = useState("");
+  const [consulta, setConsulta] = useState("");
+
+  const sendEmail = () => {
+    // Crear un formulario temporal en el DOM
+
+    const form = document.createElement("form");
+
+    // Agregar campos al formulario
+    form.innerHTML = `
+      <input type="hidden" name="nombre" value="${nombre}">
+      <input type="hidden" name="telefono" value="${correo}">
+      <input type="hidden" name="mail" value="${edad}">
+      <input type="hidden" name="consulta" value="${consulta}">
+    `;
+
+    document.body.appendChild(form);
+
+    emailjs
+      .sendForm(
+        "service_635uy0r",
+        "template_elw9q1j",
+        form,
+        "oLZ3JPZNchn1ZIslH"
+      )
+      .then(
+        (response) => {
+          console.log("SUCCESS!", response.status, response.text);
+        },
+        (error) => {
+          console.log("FAILED...", error);
+        }
+      );
+
+    document.body.removeChild(form);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!consulta || !edad || !correo || !nombre) {
+      toast.error("Por favor completa todos los campos requeridos.");
+      return;
+    }
+
+    sendEmail();
+    toast.success("Formulario enviado con exito");
+    setNombre("");
+    setCorreo("");
+    setEdad("");
+    setConsulta("");
+  };
 
   return (
     <div id="trabaja" className="trabaja-container ">
@@ -25,106 +77,45 @@ function Trabaja() {
           <h2>Forma parte del Staff</h2>
           <div className="line"></div>
         </div>
-        <Formik
-          initialValues={{
-            nombre: "",
-            edad: "",
-            email: "",
-            textarea: "",
-          }}
-          validate={(valores) => {
-            let errores = {};
 
-            // Validacion nombre
-            if (!valores.nombre) {
-              errores.nombre = "Por favor ingresa un nombre";
-            } else if (!/^[a-zA-ZÀ-ÿ\s]{1,20}$/.test(valores.nombre)) {
-              errores.nombre =
-                "El nombre solo puede contener letras y espacios, no debe tener más de 20 caracteres.";
-            }
-            // Validacion edad
-            if (!valores.edad) {
-              errores.edad = "Por favor ingresa un valor correcto";
-            } else if (/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(valores.edad)) {
-              errores.edad = "La edad no es válida";
-            }
-            // Validacion correo
-            if (!valores.email) {
-              errores.email = "Por favor ingresa un correo electrónico.";
-            } else if (
-              !/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(
-                valores.email
-              )
-            ) {
-              errores.email = "El correo es inválido.";
-            }
-            //Validacion textarea
-            if (!valores.textarea) {
-              errores.textarea = "Por favor ingresa tu consulta";
-            }
+        <form className="formulario">
+          <input
+            onChange={(e) => setNombre(e.target.value)}
+            name="nombre"
+            type="text"
+            value={nombre}
+            placeholder="Nombre y apellido"
+          ></input>
 
-            return errores;
-          }}
-          onSubmit={async (valores, { resetForm }) => {
-            const url = "/api/trabajapimp";
-            const data = {
-              nombre: valores.nombre,
-              edad: valores.edad,
-              correo: valores.email,
-              consulta: valores.textarea,
-            };
+          <input
+            onChange={(e) => setEdad(e.target.value)}
+            name="edad"
+            type="text"
+            value={edad}
+            placeholder="Edad"
+          ></input>
 
-            await axios
-              .post(url, data)
-              .then(function (response) {
-                console.log("success");
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-            resetForm();
-            cambiarFormularioEnviado(true);
-            setTimeout(() => cambiarFormularioEnviado(false), 5000);
-          }}
-        >
-          {({ errors }) => (
-            <Form className="formulario">
-              <Field
-                name="nombre"
-                type="text"
-                placeholder="Nombre y apellido"
-              ></Field>
-              <ErrorMessage
-                name="nombre"
-                component={() => <div className="error">{errors.nombre}</div>}
-              />
-              <Field name="edad" type="text" placeholder="Edad"></Field>
-              <ErrorMessage
-                name="edad"
-                component={() => <div className="error">{errors.edad}</div>}
-              />
-              <Field name="email" type="text" placeholder="Email"></Field>
-              <ErrorMessage
-                name="email"
-                component={() => <div className="error">{errors.email}</div>}
-              />
-              <Field
-                as="textarea"
-                name="textarea"
-                type="text"
-                placeholder="Mensaje"
-              ></Field>
-              <ErrorMessage
-                name="textarea"
-                component={() => <div className="error">{errors.textarea}</div>}
-              />
-              <motion.button type="submit" whileHover={{ scale: 1.07 }}>
-                Consultar
-              </motion.button>
-              {formularioEnviado && <p className="exito">Enviado con éxito!</p>}
-            </Form>
-          )}
-        </Formik>
+          <input
+            onChange={(e) => setCorreo(e.target.value)}
+            name="email"
+            type="text"
+            value={correo}
+            placeholder="Email"
+          ></input>
+
+          <input
+            onChange={(e) => setConsulta(e.target.value)}
+            as="textarea"
+            name="textarea"
+            type="text"
+            value={consulta}
+            placeholder="Mensaje"
+          ></input>
+
+          <motion.button onClick={handleSubmit} whileHover={{ scale: 1.07 }}>
+            Consultar
+          </motion.button>
+        </form>
       </motion.div>
     </div>
   );
