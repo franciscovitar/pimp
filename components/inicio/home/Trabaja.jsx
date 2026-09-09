@@ -16,8 +16,28 @@ const INITIAL_FORM_STATE = {
   nombre: "",
   edad: "",
   correo: "",
+  telefono: "",
   consulta: "",
 };
+
+const ALLOWED_CV_EXTENSIONS = [".pdf", ".doc", ".docx"];
+const MAX_CV_SIZE_BYTES = 10 * 1024 * 1024;
+
+function getCvError(file) {
+  if (!file) return null;
+
+  const name = file.name.toLowerCase();
+  const hasAllowedExtension = ALLOWED_CV_EXTENSIONS.some((ext) =>
+    name.endsWith(ext)
+  );
+  if (!hasAllowedExtension) {
+    return "El CV debe ser un archivo PDF, DOC o DOCX.";
+  }
+  if (file.size > MAX_CV_SIZE_BYTES) {
+    return "El CV no puede superar los 10 MB.";
+  }
+  return null;
+}
 
 function Trabaja() {
   const formRef = useRef(null);
@@ -41,6 +61,14 @@ function Trabaja() {
       return;
     }
 
+    const cvInput = formRef.current?.elements.namedItem("cv");
+    const cvFile = cvInput?.files?.[0] ?? null;
+    const cvError = getCvError(cvFile);
+    if (cvError) {
+      toast.error(cvError);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       await emailjs.sendForm(
@@ -51,6 +79,7 @@ function Trabaja() {
       );
       toast.success("Formulario enviado con exito");
       setFormData(INITIAL_FORM_STATE);
+      if (cvInput) cvInput.value = "";
     } catch (error) {
       console.error("Error al enviar el formulario de Trabaja en Pimp:", error);
       toast.error("No se pudo enviar el formulario. Intenta nuevamente.");
@@ -105,6 +134,15 @@ function Trabaja() {
             aria-label="Email"
           />
 
+          <input
+            onChange={handleChange("telefono")}
+            name="telefono"
+            type="tel"
+            value={formData.telefono}
+            placeholder="Celular / WhatsApp"
+            aria-label="Celular / WhatsApp"
+          />
+
           <textarea
             onChange={handleChange("consulta")}
             name="consulta"
@@ -118,6 +156,11 @@ function Trabaja() {
             // explícito: cambiar la altura visible requiere aprobación.
             style={{ height: "auto" }}
           />
+
+          <label htmlFor="cv" className="cv-label">
+            Adjuntar CV
+          </label>
+          <input id="cv" name="cv" type="file" accept=".pdf,.doc,.docx" />
 
           <motion.button
             type="submit"

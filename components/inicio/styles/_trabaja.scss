@@ -96,6 +96,35 @@
                 height: 200px;
             }
 
+            .cv-label {
+                display: block;
+                margin-top: 20px;
+                color: #fff;
+                font-weight: 500;
+                text-align: left;
+            }
+
+            input[type="file"] {
+                cursor: pointer;
+                font-size: 14px;
+
+                &::file-selector-button {
+                    margin-right: 12px;
+                    padding: 8px 16px;
+                    border: none;
+                    border-radius: 10px;
+                    background-color: #FFB6C1;
+                    color: #fff;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: 0.3s;
+
+                    &:hover {
+                        background-color: #ff9eb1;
+                    }
+                }
+            }
+
             button {
                 background-color: #FFB6C1;
                 border: none;
