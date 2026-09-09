@@ -35,12 +35,6 @@ async function fillForm(user, values = VALID_VALUES) {
   }
 }
 
-function makeFile(name, type, sizeInBytes = 1024) {
-  const file = new File(["contenido"], name, { type });
-  Object.defineProperty(file, "size", { value: sizeInBytes });
-  return file;
-}
-
 describe("Trabaja (Forma parte del Staff)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -78,6 +72,7 @@ describe("Trabaja (Forma parte del Staff)", () => {
         telefono: form.elements.namedItem("telefono")?.value,
         consulta: form.elements.namedItem("consulta")?.value,
         mail: form.elements.namedItem("mail"),
+        cv: form.elements.namedItem("cv"),
       };
       return { status: 200, text: "OK" };
     });
@@ -98,6 +93,7 @@ describe("Trabaja (Forma parte del Staff)", () => {
       telefono: VALID_VALUES.telefono,
       consulta: VALID_VALUES.consulta,
       mail: null,
+      cv: null,
     });
   });
 
@@ -122,78 +118,18 @@ describe("Trabaja (Forma parte del Staff)", () => {
     expect(sentValues.telefono).not.toBe(sentValues.correo);
   });
 
-  it("submits successfully without a CV (optional field)", async () => {
+  it("submits successfully with just the 5 form fields (no file upload involved)", async () => {
     emailjs.sendForm.mockResolvedValueOnce({ status: 200, text: "OK" });
     const user = userEvent.setup();
-    render(<Trabaja />);
+    const { container } = render(<Trabaja />);
+
+    expect(container.querySelector('input[type="file"]')).not.toBeInTheDocument();
 
     await fillForm(user);
     await user.click(screen.getByRole("button", { name: /consultar/i }));
 
     await waitFor(() => expect(toast.success).toHaveBeenCalled());
     expect(emailjs.sendForm).toHaveBeenCalledTimes(1);
-  });
-
-  it("submits successfully with a valid CV and clears the file input afterwards", async () => {
-    let cvFileSent;
-    emailjs.sendForm.mockImplementationOnce(async (_service, _template, form) => {
-      cvFileSent = form.elements.namedItem("cv")?.files?.[0];
-      return { status: 200, text: "OK" };
-    });
-    const user = userEvent.setup();
-    render(<Trabaja />);
-
-    await fillForm(user);
-    const cvInput = screen.getByLabelText(/adjuntar cv/i);
-    const cv = makeFile("cv.pdf", "application/pdf");
-    await user.upload(cvInput, cv);
-
-    await user.click(screen.getByRole("button", { name: /consultar/i }));
-    await waitFor(() => expect(toast.success).toHaveBeenCalled());
-
-    expect(cvFileSent?.name).toBe("cv.pdf");
-    expect(cvInput.value).toBe("");
-  });
-
-  it("rejects a CV over 10 MB without submitting, keeping the entered data", async () => {
-    const user = userEvent.setup();
-    render(<Trabaja />);
-
-    await fillForm(user);
-    const cvInput = screen.getByLabelText(/adjuntar cv/i);
-    const oversizedCv = makeFile("cv.pdf", "application/pdf", 11 * 1024 * 1024);
-    await user.upload(cvInput, oversizedCv);
-
-    await user.click(screen.getByRole("button", { name: /consultar/i }));
-
-    expect(toast.error).toHaveBeenCalledWith("El CV no puede superar los 10 MB.");
-    expect(emailjs.sendForm).not.toHaveBeenCalled();
-    expect(screen.getByLabelText(FIELD_LABELS.nombre)).toHaveValue(
-      VALID_VALUES.nombre
-    );
-  });
-
-  it("rejects a CV with an invalid extension without submitting, keeping the entered data", async () => {
-    // A user can bypass the file picker's `accept` filter (it's a UI hint,
-    // not an enforcement mechanism), so the app's own validation - which
-    // this test targets - has to catch it too. applyAccept only takes
-    // effect via userEvent.setup(), not as a per-upload-call option.
-    const user = userEvent.setup({ applyAccept: false });
-    render(<Trabaja />);
-
-    await fillForm(user);
-    const cvInput = screen.getByLabelText(/adjuntar cv/i);
-    const invalidCv = makeFile("cv.exe", "application/octet-stream");
-    await user.upload(cvInput, invalidCv);
-    await user.click(screen.getByRole("button", { name: /consultar/i }));
-
-    expect(toast.error).toHaveBeenCalledWith(
-      "El CV debe ser un archivo PDF, DOC o DOCX."
-    );
-    expect(emailjs.sendForm).not.toHaveBeenCalled();
-    expect(screen.getByLabelText(FIELD_LABELS.consulta)).toHaveValue(
-      VALID_VALUES.consulta
-    );
   });
 
   it("shows an error toast and re-enables the button if EmailJS fails for real", async () => {
@@ -208,5 +144,53 @@ describe("Trabaja (Forma parte del Staff)", () => {
     await waitFor(() => expect(toast.error).toHaveBeenCalled());
     expect(toast.success).not.toHaveBeenCalled();
     expect(button).not.toBeDisabled();
+  });
+
+  describe('"Enviar CV por WhatsApp" secondary action', () => {
+    it("is not shown before a successful submission", () => {
+      render(<Trabaja />);
+
+      expect(
+        screen.queryByRole("link", { name: /enviar cv por whatsapp/i })
+      ).not.toBeInTheDocument();
+    });
+
+    it("stays hidden if EmailJS fails, so the applicant is never told to send a CV for an application that didn't go through", async () => {
+      emailjs.sendForm.mockRejectedValueOnce(new Error("network error"));
+      const user = userEvent.setup();
+      render(<Trabaja />);
+
+      await fillForm(user);
+      await user.click(screen.getByRole("button", { name: /consultar/i }));
+      await waitFor(() => expect(toast.error).toHaveBeenCalled());
+
+      expect(
+        screen.queryByRole("link", { name: /enviar cv por whatsapp/i })
+      ).not.toBeInTheDocument();
+    });
+
+    it("appears after a successful submission, linking to Pimp's general WhatsApp with a pre-filled message", async () => {
+      emailjs.sendForm.mockResolvedValueOnce({ status: 200, text: "OK" });
+      const user = userEvent.setup();
+      render(<Trabaja />);
+
+      await fillForm(user);
+      await user.click(screen.getByRole("button", { name: /consultar/i }));
+      await waitFor(() => expect(toast.success).toHaveBeenCalled());
+
+      const cvLink = screen.getByRole("link", {
+        name: /enviar cv por whatsapp/i,
+      });
+      expect(cvLink).toHaveAttribute("target", "_blank");
+      expect(cvLink).toHaveAttribute("rel", "noopener noreferrer");
+
+      const href = new URL(cvLink.getAttribute("href"));
+      expect(`${href.origin}${href.pathname}`).toBe(
+        "https://wa.me/5491126834248"
+      );
+      expect(href.searchParams.get("text")).toBe(
+        "Hola, me postulé desde la web de Pimp. Te envío mi CV."
+      );
+    });
   });
 });

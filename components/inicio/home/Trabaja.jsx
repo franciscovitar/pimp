@@ -20,29 +20,17 @@ const INITIAL_FORM_STATE = {
   consulta: "",
 };
 
-const ALLOWED_CV_EXTENSIONS = [".pdf", ".doc", ".docx"];
-const MAX_CV_SIZE_BYTES = 10 * 1024 * 1024;
-
-function getCvError(file) {
-  if (!file) return null;
-
-  const name = file.name.toLowerCase();
-  const hasAllowedExtension = ALLOWED_CV_EXTENSIONS.some((ext) =>
-    name.endsWith(ext)
-  );
-  if (!hasAllowedExtension) {
-    return "El CV debe ser un archivo PDF, DOC o DOCX.";
-  }
-  if (file.size > MAX_CV_SIZE_BYTES) {
-    return "El CV no puede superar los 10 MB.";
-  }
-  return null;
-}
+// EmailJS cobra por adjuntos, así que el CV no viaja por el formulario: tras
+// un envío exitoso se ofrece mandarlo por WhatsApp al número general de Pimp.
+const CV_WHATSAPP_URL = `https://wa.me/5491126834248?text=${encodeURIComponent(
+  "Hola, me postulé desde la web de Pimp. Te envío mi CV."
+)}`;
 
 function Trabaja() {
   const formRef = useRef(null);
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showCvWhatsapp, setShowCvWhatsapp] = useState(false);
 
   const handleChange = (field) => (e) => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
@@ -61,14 +49,6 @@ function Trabaja() {
       return;
     }
 
-    const cvInput = formRef.current?.elements.namedItem("cv");
-    const cvFile = cvInput?.files?.[0] ?? null;
-    const cvError = getCvError(cvFile);
-    if (cvError) {
-      toast.error(cvError);
-      return;
-    }
-
     setIsSubmitting(true);
     try {
       await emailjs.sendForm(
@@ -79,7 +59,7 @@ function Trabaja() {
       );
       toast.success("Formulario enviado con exito");
       setFormData(INITIAL_FORM_STATE);
-      if (cvInput) cvInput.value = "";
+      setShowCvWhatsapp(true);
     } catch (error) {
       console.error("Error al enviar el formulario de Trabaja en Pimp:", error);
       toast.error("No se pudo enviar el formulario. Intenta nuevamente.");
@@ -157,11 +137,6 @@ function Trabaja() {
             style={{ height: "auto" }}
           />
 
-          <label htmlFor="cv" className="cv-label">
-            Adjuntar CV
-          </label>
-          <input id="cv" name="cv" type="file" accept=".pdf,.doc,.docx" />
-
           <motion.button
             type="submit"
             disabled={isSubmitting}
@@ -169,6 +144,18 @@ function Trabaja() {
           >
             {isSubmitting ? "Enviando..." : "Consultar"}
           </motion.button>
+
+          {showCvWhatsapp && (
+            <a
+              href={CV_WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cv-whatsapp-link"
+            >
+              <i className="bi bi-whatsapp"></i>
+              <span>Enviar CV por WhatsApp</span>
+            </a>
+          )}
         </form>
       </motion.div>
     </div>
