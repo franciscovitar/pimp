@@ -19,7 +19,8 @@ function BotonFlotante() {
         {...buttonVariants}
         href="https://wa.me/5491163671328"
         className="boton-wsp"
-        target="blank"
+        target="_blank"
+        rel="noopener noreferrer"
       >
         <i className="bi bi-whatsapp"></i>
         <span> Escribeme!</span>

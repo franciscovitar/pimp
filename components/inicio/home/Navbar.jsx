@@ -123,7 +123,8 @@ const NavBar = () => {
             <a
               className={navbar ? "underline-black" : "underline-white"}
               href="https://pimp.turnosya.com/landing/"
-              target="blank"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Reserva online
             </a>
@@ -137,7 +138,8 @@ const NavBar = () => {
             <a
               className={navbar ? "underline-black" : "underline-white"}
               href="https://wa.me/5491149366466"
-              target="blank"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Franquicias
             </a>

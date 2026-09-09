@@ -42,7 +42,7 @@ function Contactar() {
     <div id="contacto" className="contactar-container">
       <div className="contacto">
         <motion.div {...containerVariants}>
-          <Image src={Logo}></Image>
+          <Image src={Logo} alt="Pimp" />
         </motion.div>
         <div>
           <motion.h2 {...textVariants}>Horarios de atención:</motion.h2>

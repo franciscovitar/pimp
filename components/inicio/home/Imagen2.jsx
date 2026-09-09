@@ -36,7 +36,11 @@ function Imagen2() {
           buscan cuidar y resaltar su cuerpo.
         </motion.h3>
 
-        <Link target="blank" href="https://pimp.turnosya.com/landing/">
+        <Link
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://pimp.turnosya.com/landing/"
+        >
           <motion.button {...buttonVariants} viewport={{ once: true }}>
             Contactanos!
           </motion.button>

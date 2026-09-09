@@ -39,7 +39,7 @@ function HomeWelcome() {
     <div id="inicio" className="HomeWelcome-container">
       <div className="container">
         <motion.div {...imageVariants}>
-          <Image src={Pimp}></Image>
+          <Image src={Pimp} alt="Pimp" />
         </motion.div>
 
         <motion.p {...textVariants}>

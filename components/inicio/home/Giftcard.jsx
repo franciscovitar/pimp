@@ -58,7 +58,7 @@ function Giftcard() {
       <motion.div {...lineVariants} className="line m-auto"></motion.div>
       <div className="giftcard">
         <motion.div {...imageVariants} className="img">
-          <Image src={Gift}></Image>
+          <Image src={Gift} alt="Gift Card Pimp" />
         </motion.div>
         <div className="texto">
           <motion.h2 {...subheadingVariants}>Regalá una Gift Card</motion.h2>

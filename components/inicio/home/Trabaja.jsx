@@ -1,64 +1,62 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 import "../styles/_trabaja.scss";
 import emailjs from "@emailjs/browser";
 
+// IDs públicos de EmailJS: por diseño del SDK viajan en el bundle del
+// cliente, no son un secreto equivalente a una contraseña o API key privada.
+const EMAILJS_SERVICE_ID = "service_635uy0r";
+const EMAILJS_TEMPLATE_ID = "template_elw9q1j";
+const EMAILJS_PUBLIC_KEY = "oLZ3JPZNchn1ZIslH";
+
+const INITIAL_FORM_STATE = {
+  nombre: "",
+  edad: "",
+  correo: "",
+  consulta: "",
+};
+
 function Trabaja() {
-  const [nombre, setNombre] = useState("");
-  const [correo, setCorreo] = useState("");
-  const [edad, setEdad] = useState("");
-  const [consulta, setConsulta] = useState("");
+  const formRef = useRef(null);
+  const [formData, setFormData] = useState(INITIAL_FORM_STATE);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const sendEmail = () => {
-    // Crear un formulario temporal en el DOM
-
-    const form = document.createElement("form");
-
-    // Agregar campos al formulario
-    form.innerHTML = `
-      <input type="hidden" name="nombre" value="${nombre}">
-      <input type="hidden" name="telefono" value="${correo}">
-      <input type="hidden" name="mail" value="${edad}">
-      <input type="hidden" name="consulta" value="${consulta}">
-    `;
-
-    document.body.appendChild(form);
-
-    emailjs
-      .sendForm(
-        "service_635uy0r",
-        "template_elw9q1j",
-        form,
-        "oLZ3JPZNchn1ZIslH"
-      )
-      .then(
-        (response) => {
-          console.log("SUCCESS!", response.status, response.text);
-        },
-        (error) => {
-          console.log("FAILED...", error);
-        }
-      );
-
-    document.body.removeChild(form);
+  const handleChange = (field) => (e) => {
+    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const isFormValid = () =>
+    Object.values(formData).every((value) => value.trim() !== "");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!consulta || !edad || !correo || !nombre) {
+
+    if (isSubmitting) return;
+
+    if (!isFormValid()) {
       toast.error("Por favor completa todos los campos requeridos.");
       return;
     }
 
-    sendEmail();
-    toast.success("Formulario enviado con exito");
-    setNombre("");
-    setCorreo("");
-    setEdad("");
-    setConsulta("");
+    setIsSubmitting(true);
+    try {
+      await emailjs.sendForm(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        formRef.current,
+        EMAILJS_PUBLIC_KEY
+      );
+      toast.success("Formulario enviado con exito");
+      setFormData(INITIAL_FORM_STATE);
+    } catch (error) {
+      console.error("Error al enviar el formulario de Trabaja en Pimp:", error);
+      toast.error("No se pudo enviar el formulario. Intenta nuevamente.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -78,42 +76,55 @@ function Trabaja() {
           <div className="line"></div>
         </div>
 
-        <form className="formulario">
+        <form ref={formRef} className="formulario" onSubmit={handleSubmit}>
           <input
-            onChange={(e) => setNombre(e.target.value)}
+            onChange={handleChange("nombre")}
             name="nombre"
             type="text"
-            value={nombre}
+            value={formData.nombre}
             placeholder="Nombre y apellido"
-          ></input>
+            aria-label="Nombre y apellido"
+          />
 
           <input
-            onChange={(e) => setEdad(e.target.value)}
+            onChange={handleChange("edad")}
             name="edad"
             type="text"
-            value={edad}
+            inputMode="numeric"
+            value={formData.edad}
             placeholder="Edad"
-          ></input>
+            aria-label="Edad"
+          />
 
           <input
-            onChange={(e) => setCorreo(e.target.value)}
-            name="email"
-            type="text"
-            value={correo}
+            onChange={handleChange("correo")}
+            name="correo"
+            type="email"
+            value={formData.correo}
             placeholder="Email"
-          ></input>
+            aria-label="Email"
+          />
 
-          <input
-            onChange={(e) => setConsulta(e.target.value)}
-            as="textarea"
-            name="textarea"
-            type="text"
-            value={consulta}
+          <textarea
+            onChange={handleChange("consulta")}
+            name="consulta"
+            rows={1}
+            value={formData.consulta}
             placeholder="Mensaje"
-          ></input>
+            aria-label="Mensaje"
+            // El SCSS define ".formulario textarea { height: 200px }" para un
+            // futuro cuadro de mensaje más alto. Se mantiene el tamaño actual
+            // (una línea, igual que el resto de los campos) a pedido
+            // explícito: cambiar la altura visible requiere aprobación.
+            style={{ height: "auto" }}
+          />
 
-          <motion.button onClick={handleSubmit} whileHover={{ scale: 1.07 }}>
-            Consultar
+          <motion.button
+            type="submit"
+            disabled={isSubmitting}
+            whileHover={{ scale: 1.07 }}
+          >
+            {isSubmitting ? "Enviando..." : "Consultar"}
           </motion.button>
         </form>
       </motion.div>

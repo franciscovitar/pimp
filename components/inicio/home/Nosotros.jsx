@@ -57,7 +57,11 @@ function Nosotros() {
         <motion.div className="imagen" {...imageVariants}>
           <div className="imagen-zoom">
             <motion.div {...hoverVariants}>
-              <Image alt="Img1" className="img" src={BudaImage}></Image>
+              <Image
+              alt="Espacio del centro de estética Pimp"
+              className="img"
+              src={BudaImage}
+            ></Image>
             </motion.div>
           </div>
         </motion.div>
@@ -75,7 +79,8 @@ function Nosotros() {
             <strong>mantener la autenticidad</strong>.
           </motion.p>
           <motion.a
-            target="blank"
+            target="_blank"
+            rel="noopener noreferrer"
             href="https://pimp.turnosya.com/landing/"
             {...paragraphVariants}
             className="continuar"
