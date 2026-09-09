@@ -146,12 +146,58 @@ describe("Trabaja (Forma parte del Staff)", () => {
     expect(button).not.toBeDisabled();
   });
 
-  describe('"Enviar CV por WhatsApp" secondary action', () => {
+  describe('direct "Enviar CV por WhatsApp" action (always visible)', () => {
+    it("is visible from the start, before touching the form", () => {
+      render(<Trabaja />);
+
+      expect(
+        screen.getByRole("link", { name: /^enviar cv por whatsapp$/i })
+      ).toBeInTheDocument();
+    });
+
+    it("works without completing any form field and does not submit or validate the form", async () => {
+      const user = userEvent.setup();
+      render(<Trabaja />);
+
+      const cvLink = screen.getByRole("link", {
+        name: /^enviar cv por whatsapp$/i,
+      });
+      await user.click(cvLink);
+
+      expect(emailjs.sendForm).not.toHaveBeenCalled();
+      expect(toast.error).not.toHaveBeenCalled();
+      expect(toast.success).not.toHaveBeenCalled();
+    });
+
+    it("is a real <a> targeting Pimp's general WhatsApp with the direct-application message", () => {
+      render(<Trabaja />);
+
+      const cvLink = screen.getByRole("link", {
+        name: /^enviar cv por whatsapp$/i,
+      });
+      expect(cvLink.tagName).toBe("A");
+      expect(cvLink).toHaveAttribute("target", "_blank");
+      expect(cvLink).toHaveAttribute("rel", "noopener noreferrer");
+
+      const href = new URL(cvLink.getAttribute("href"));
+      expect(`${href.origin}${href.pathname}`).toBe(
+        "https://wa.me/5491126834248"
+      );
+      expect(href.searchParams.get("text")).toBe(
+        "Hola, me quiero postular para formar parte del Staff de Pimp. Te envío mi CV."
+      );
+    });
+  });
+
+  describe('post-success "Enviar mi CV por WhatsApp" block', () => {
     it("is not shown before a successful submission", () => {
       render(<Trabaja />);
 
       expect(
-        screen.queryByRole("link", { name: /enviar cv por whatsapp/i })
+        screen.queryByText("¡Postulación enviada correctamente!")
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("link", { name: /enviar mi cv por whatsapp/i })
       ).not.toBeInTheDocument();
     });
 
@@ -165,11 +211,11 @@ describe("Trabaja (Forma parte del Staff)", () => {
       await waitFor(() => expect(toast.error).toHaveBeenCalled());
 
       expect(
-        screen.queryByRole("link", { name: /enviar cv por whatsapp/i })
+        screen.queryByRole("link", { name: /enviar mi cv por whatsapp/i })
       ).not.toBeInTheDocument();
     });
 
-    it("appears after a successful submission, linking to Pimp's general WhatsApp with a pre-filled message", async () => {
+    it("appears after a successful submission, linking to Pimp's general WhatsApp with a contextual message", async () => {
       emailjs.sendForm.mockResolvedValueOnce({ status: 200, text: "OK" });
       const user = userEvent.setup();
       render(<Trabaja />);
@@ -178,8 +224,12 @@ describe("Trabaja (Forma parte del Staff)", () => {
       await user.click(screen.getByRole("button", { name: /consultar/i }));
       await waitFor(() => expect(toast.success).toHaveBeenCalled());
 
+      expect(
+        screen.getByText("¡Postulación enviada correctamente!")
+      ).toBeInTheDocument();
+
       const cvLink = screen.getByRole("link", {
-        name: /enviar cv por whatsapp/i,
+        name: /enviar mi cv por whatsapp/i,
       });
       expect(cvLink).toHaveAttribute("target", "_blank");
       expect(cvLink).toHaveAttribute("rel", "noopener noreferrer");
@@ -189,7 +239,7 @@ describe("Trabaja (Forma parte del Staff)", () => {
         "https://wa.me/5491126834248"
       );
       expect(href.searchParams.get("text")).toBe(
-        "Hola, me postulé desde la web de Pimp. Te envío mi CV."
+        "Hola, recién envié mi postulación desde la web de Pimp. Te envío mi CV."
       );
     });
   });
