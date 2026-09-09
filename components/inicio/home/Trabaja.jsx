@@ -20,17 +20,10 @@ const INITIAL_FORM_STATE = {
   consulta: "",
 };
 
-// EmailJS cobra por adjuntos, así que el CV no viaja por el formulario: se
-// ofrece mandarlo por WhatsApp al número general de Pimp en dos momentos
-// distintos, cada uno con su propio mensaje precargado.
-const CV_WHATSAPP_NUMBER = "5491126834248";
-
-const CV_DIRECT_WHATSAPP_URL = `https://wa.me/${CV_WHATSAPP_NUMBER}?text=${encodeURIComponent(
-  "Hola, me quiero postular para formar parte del Staff de Pimp. Te envío mi CV."
-)}`;
-
-const CV_SUCCESS_WHATSAPP_URL = `https://wa.me/${CV_WHATSAPP_NUMBER}?text=${encodeURIComponent(
-  "Hola, recién envié mi postulación desde la web de Pimp. Te envío mi CV."
+// EmailJS cobra por adjuntos, así que el CV no viaja por el formulario: tras
+// un envío exitoso se ofrece mandarlo por WhatsApp al número general de Pimp.
+const CV_WHATSAPP_URL = `https://wa.me/5491126834248?text=${encodeURIComponent(
+  "Hola, me postulé desde la web de Pimp. Te envío mi CV."
 )}`;
 
 function Trabaja() {
@@ -144,47 +137,26 @@ function Trabaja() {
             style={{ height: "auto" }}
           />
 
-          <div className="acciones-formulario">
-            <motion.button
-              type="submit"
-              disabled={isSubmitting}
-              whileHover={{ scale: 1.07 }}
-            >
-              {isSubmitting ? "Enviando..." : "Consultar"}
-            </motion.button>
+          <motion.button
+            type="submit"
+            disabled={isSubmitting}
+            whileHover={{ scale: 1.07 }}
+          >
+            {isSubmitting ? "Enviando..." : "Consultar"}
+          </motion.button>
 
-            <motion.a
-              href={CV_DIRECT_WHATSAPP_URL}
+          {showCvWhatsapp && (
+            <a
+              href={CV_WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="cv-whatsapp-link"
-              whileHover={{ scale: 1.07 }}
             >
               <i className="bi bi-whatsapp"></i>
               <span>Enviar CV por WhatsApp</span>
-            </motion.a>
-          </div>
-        </form>
-
-        {showCvWhatsapp && (
-          <div className="post-envio">
-            <p className="post-envio-titulo">
-              ¡Postulación enviada correctamente!
-            </p>
-            <p className="post-envio-texto">
-              Si tenés CV, podés enviarlo ahora por WhatsApp.
-            </p>
-            <a
-              href={CV_SUCCESS_WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="post-envio-cta"
-            >
-              <i className="bi bi-whatsapp"></i>
-              <span>Enviar mi CV por WhatsApp</span>
             </a>
-          </div>
-        )}
+          )}
+        </form>
       </motion.div>
     </div>
   );
