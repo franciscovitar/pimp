@@ -7,6 +7,43 @@ import "../styles/navBar.scss";
 import Logo from "../../../Image/pimp.png";
 import LogoBlanco from "../../../Image/pimp-blanco.png";
 
+// `sectionKey` solo se define en los links cuyo estado activo se resalta
+// mientras se hace scroll (ver handleScroll). El resto de las secciones no
+// tenía seguimiento de "activo" en el diseño original.
+const DESKTOP_LINKS = [
+  { href: "#inicio", label: "Inicio", sectionKey: "inicio" },
+  { href: "#nosotros", label: "Nosotros", sectionKey: "nosotros" },
+  { href: "#tratamientos", label: "Servicios" },
+  {
+    href: "https://pimp.turnosya.com/landing/",
+    label: "Reserva online",
+    external: true,
+  },
+  { href: "#giftcard", label: "Gift Card" },
+  {
+    href: "https://wa.me/5491149366466",
+    label: "Franquicias",
+    external: true,
+  },
+  { href: "#trabaja", label: "Trabaja en Pimp" },
+  { href: "#ubicacion", label: "Ubicación" },
+  { href: "#contacto", label: "Contacto" },
+];
+
+// El menú mobile mantiene sus propios textos (p. ej. "Reserva Online" con
+// mayúscula) tal como estaban en el diseño original.
+const MOBILE_LINKS = [
+  { href: "#inicio", label: "Inicio" },
+  { href: "#nosotros", label: "Nosotros" },
+  { href: "#tratamientos", label: "Servicios" },
+  { href: "https://pimp.turnosya.com/landing/", label: "Reserva Online" },
+  { href: "#giftcard", label: "Gift Card" },
+  { href: "https://wa.me/5491149366466", label: "Franquicias" },
+  { href: "#trabaja", label: "Trabaja en Pimp" },
+  { href: "#ubicacion", label: "Ubicación" },
+  { href: "#contacto", label: "Contacto" },
+];
+
 const NavBar = () => {
   const [clicked, setClicked] = useState(false);
   const [navbar, setNavbar] = useState(false);
@@ -21,27 +58,25 @@ const NavBar = () => {
     setClicked(!clicked);
   };
 
-  const handleScroll = () => {
-    const scrollY = window.scrollY;
+  useEffect(() => {
     const inicioSection = document.getElementById("inicio");
     const nosotrosSection = document.getElementById("nosotros");
-    const tratamientosSection = document.getElementById("tratamientos"); // Agrega esta línea
+    const tratamientosSection = document.getElementById("tratamientos");
 
-    if (scrollY < nosotrosSection.offsetTop) {
-      setActiveSection("inicio");
-    } else if (scrollY < tratamientosSection.offsetTop) {
-      setActiveSection("nosotros");
-    } else {
-      setActiveSection("tratamientos"); // Agrega este bloque según tus secciones
-    }
-    // ... Actualiza según las secciones adicionales
-  };
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
 
-  const changeBg = () => {
-    setNavbar(window.scrollY > 80);
-  };
+      if (scrollY < nosotrosSection.offsetTop) {
+        setActiveSection("inicio");
+      } else if (scrollY < tratamientosSection.offsetTop) {
+        setActiveSection("nosotros");
+      } else {
+        setActiveSection("tratamientos");
+      }
+    };
 
-  useEffect(() => {
+    const changeBg = () => setNavbar(window.scrollY > 80);
+
     window.addEventListener("scroll", changeBg);
     window.addEventListener("scroll", handleScroll);
 
@@ -50,6 +85,11 @@ const NavBar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const getLinkClassName = ({ sectionKey }) => {
+    const base = navbar ? "underline-black" : "underline-white";
+    return sectionKey && activeSection === sectionKey ? `${base} active` : base;
+  };
 
   return (
     <nav className="navbar-container">
@@ -86,85 +126,27 @@ const NavBar = () => {
           }}
         >
           <div className="links">
-            <a
-              className={
-                navbar
-                  ? activeSection === "inicio"
-                    ? "underline-black active"
-                    : "underline-black"
-                  : activeSection === "inicio"
-                  ? "underline-white active"
-                  : "underline-white"
-              }
-              href="#inicio"
-            >
-              Inicio
-            </a>
-            <a
-              className={
-                navbar
-                  ? activeSection === "inicio"
-                    ? "underline-black active"
-                    : "underline-black"
-                  : activeSection === "inicio"
-                  ? "underline-white active"
-                  : "underline-white"
-              }
-              href="#nosotros"
-            >
-              Nosotros
-            </a>
-            <a
-              className={navbar ? "underline-black" : "underline-white"}
-              href="#tratamientos"
-            >
-              Servicios
-            </a>
-            <a
-              className={navbar ? "underline-black" : "underline-white"}
-              href="https://pimp.turnosya.com/landing/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Reserva online
-            </a>
-            <a
-              className={navbar ? "underline-black" : "underline-white"}
-              href="#giftcard"
-            >
-              Gift Card
-            </a>
-
-            <a
-              className={navbar ? "underline-black" : "underline-white"}
-              href="https://wa.me/5491149366466"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Franquicias
-            </a>
-            <a
-              className={navbar ? "underline-black" : "underline-white"}
-              href="#trabaja"
-            >
-              Trabaja en Pimp
-            </a>
-            <a
-              className={navbar ? "underline-black" : "underline-white"}
-              href="#ubicacion"
-            >
-              Ubicación
-            </a>
-            <a
-              className={navbar ? "underline-black" : "underline-white"}
-              href="#contacto"
-            >
-              Contacto
-            </a>
+            {DESKTOP_LINKS.map((link) => (
+              <a
+                key={link.href}
+                className={getLinkClassName(link)}
+                href={link.href}
+                {...(link.external
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
           <i
-            type="button"
+            role="button"
+            tabIndex={0}
+            aria-label={clicked ? "Cerrar menú" : "Abrir menú"}
             onClick={handleClick}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") handleClick();
+            }}
             className={`bi ${navbar ? "text-black" : "text-white"} ${
               clicked ? "bi-x text-white" : "bi-list"
             }`}
@@ -172,33 +154,11 @@ const NavBar = () => {
         </motion.div>
         <div ref={bgDiv} className="bg-div">
           <div ref={linksActive} className="links-active">
-            <a href="#inicio" onClick={handleClick}>
-              Inicio
-            </a>
-            <a href="#nosotros" onClick={handleClick}>
-              Nosotros
-            </a>
-            <a href="#tratamientos" onClick={handleClick}>
-              Servicios
-            </a>
-            <a href="https://pimp.turnosya.com/landing/" onClick={handleClick}>
-              Reserva Online
-            </a>
-            <a href="#giftcard" onClick={handleClick}>
-              Gift Card
-            </a>
-            <a href="https://wa.me/5491149366466" onClick={handleClick}>
-              Franquicias
-            </a>
-            <a href="#trabaja" onClick={handleClick}>
-              Trabaja en Pimp
-            </a>
-            <a href="#ubicacion" onClick={handleClick}>
-              Ubicación
-            </a>
-            <a href="#contacto" onClick={handleClick}>
-              Contacto
-            </a>
+            {MOBILE_LINKS.map((link) => (
+              <a key={link.href} href={link.href} onClick={handleClick}>
+                {link.label}
+              </a>
+            ))}
           </div>
         </div>
       </div>

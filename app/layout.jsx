@@ -11,15 +11,35 @@ const roboto = Roboto({
 
 import Script from "next/script";
 
+const description =
+  "Explora tu belleza única en nuestros centros de estética ubicados tanto en Barracas como en la exclusiva zona de Puerto Madero.";
+
 export const metadata = {
+  metadataBase: new URL("https://pimpestetica.com"),
   title: "Pimp",
-  description:
-    "Explora tu belleza única en nuestros centros de estética ubicados tanto en Barracas como en la exclusiva zona de Puerto Madero.",
+  description,
   keywords: ["Puerto Madero", "Masajes", "Centro de estetica"],
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: "Pimp",
+    description,
+    url: "https://pimpestetica.com/",
+    siteName: "Pimp",
+    locale: "es_AR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Pimp",
+    description,
+  },
 };
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="es-AR">
       <head>
         <link rel="canonical" href="https://pimpestetica.com/" />
         <meta
