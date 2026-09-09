@@ -17,7 +17,7 @@ function BotonFlotante() {
     <div className="btn-flotante">
       <motion.a
         {...buttonVariants}
-        href="https://wa.me/5491163671328"
+        href="https://wa.me/5491126834248"
         className="boton-wsp"
         target="_blank"
         rel="noopener noreferrer"

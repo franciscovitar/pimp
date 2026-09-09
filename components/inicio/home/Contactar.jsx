@@ -63,7 +63,7 @@ function Contactar() {
             </a>
 
             <a
-              href="https://wa.me/5491163671328"
+              href="https://wa.me/5491126834248"
               target="_blank"
               rel="noopener noreferrer"
             >
