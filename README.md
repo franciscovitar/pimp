@@ -1,5 +1,22 @@
 # Pimp — sitio web
 
+## Recruiter / Engineering Snapshot
+
+**Product.** Real client website for Pimp, a wellness/aesthetics business in Buenos Aires. The product presents services, locations, contact paths and a staff-application flow.
+
+**Architecture.** Next.js 14 App Router + React + Sass. The home is composed from section-level components, service content is data-driven, Framer Motion handles viewport animation, and the staff form uses the EmailJS browser SDK.
+
+**Engineering decisions.**
+- Keep form submission state explicit: required-field validation, disabled/loading state, success only after EmailJS resolves, and visible error feedback on failure.
+- Keep service data separate from presentation so repeated service sections share one content source.
+- Preserve responsive behavior with component-scoped Sass and reusable page sections.
+
+**Verification surface.** Vitest + Testing Library cover the staff form’s validation/submission behavior, service-data integrity and observable Navbar behavior. This README-only change does not claim the suite was rerun.
+
+**Repository:** https://github.com/franciscovitar/pimp
+
+---
+
 Landing page de una sola página (Next.js 14 / App Router) para el centro de
 estética Pimp (Barracas y Puerto Madero, CABA). Presenta servicios, gift
 card, ubicación, contacto y un formulario para postularse a trabajar en el
